@@ -1,6 +1,7 @@
 import requests
 from twilio.rest import Client
 from bs4 import BeautifulSoup, Comment
+from boto.s3.connection import S3Connection
 
 #Example scraped data indexes
 #Index     Data
@@ -14,12 +15,12 @@ from bs4 import BeautifulSoup, Comment
 #10)       ['72', '120']
 
 #Make sure to put the class number
-classesToNotify = [ 78726, 85504, 79319, 89472 ]
+classesToNotify = os.environ['CLASS_LIST']
 
 def sendText(classInfo):
     #API information
-    account_sid = 'AC4333ab7ba43b161d99d908c3e4e28409'
-    auth_token = 'f597d1c038fa449d5c1830ec4be553eb'
+    account_sid = os.environ['SID']
+    auth_token = os.environ['AUTH_TOKEN']
     client = Client(account_sid, auth_token)
     
     textBody = "The following class has opened up:\n" + classInfo + "\nhttps://webapp4.asu.edu/myasu/"
@@ -27,8 +28,8 @@ def sendText(classInfo):
     message = client.messages.create \
                 (
                     body = textBody,
-                    from_= '+16025856425'
-                    to = '+16198321370'
+                    from_= os.environ['TWILIO_PHONE'],
+                    to = os.environ['PHONE']
                 )
     return None
     
